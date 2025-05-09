@@ -7,7 +7,7 @@ const overlayText = document.createElement('div');
 overlayText.id = 'overlay-text';
 overlayText.innerHTML = `
   <p>
-  Move your mouse to see how the particles respond. <br>
+  Move your mouse to herd the cattle. <br>
   </p>
 `;
 document.body.appendChild(overlayText);
@@ -38,8 +38,8 @@ const settings = {
   particleColor: '#f2f2f2',
   repulsionRadius: 100,
   cursorForce: 500,
-  innerColor: '#88b1b1',
-  outerColor: '#ffffff'
+  innerColor: '#2f7840',
+  outerColor: '#c8e398'
 };
 
 //global variables
