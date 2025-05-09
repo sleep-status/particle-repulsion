@@ -5,36 +5,13 @@ const ctx = canvas.getContext('2d');
 // Create and inject the overlay text element
 const overlayText = document.createElement('div');
 overlayText.id = 'overlay-text';
-overlayText.innerHTML = `
-  <p>
-  Move your mouse to herd the cattle. <br>
-  </p>
-`;
+overlayText.innerHTML = '';
 document.body.appendChild(overlayText);
-
-// Style the overlay text directly in JS
-Object.assign(overlayText.style, {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  textAlign: 'center',
-  color: 'white',
-  fontSize: '24px',
-  fontFamily: 'Arial, sans-serif',
-  maxWidth: '600px',
-  lineHeight: '1.5',
-  zIndex: '1', 
-  opacity: '1',
-  pointerEvents: 'none', // allows mouse to pass through to canvas
-  fontWeight: "0.5",
-  textShadow: '2px 2px 6px rgba(0, 0, 0, 0.7)',
-});
 
 // UI starting Settings
 const settings = {
-  particleCount: 3000,
-  particleSize: 3,
+  particleCount: 250,
+  particleSize: 7,
   particleColor: '#f2f2f2',
   repulsionRadius: 100,
   cursorForce: 500,
@@ -140,19 +117,35 @@ for (let other of particles) {
     this.vy -= Math.sin(angle) * force;
   }
 }  
+
+// 🐄 Minimum speed wandering effect
+const grazingSpeed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
+const minSpeed = 0.2;
+if (grazingSpeed < minSpeed) {
+  const angle = Math.random() * Math.PI * 2;
+  const boost = minSpeed;
+  this.vx += Math.cos(angle) * boost;
+  this.vy += Math.sin(angle) * boost;
+}
+
     this.x += this.vx;
     this.y += this.vy;
   
     // Optional: bounce off canvas edges
-    if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
-    if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+    // if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+    // if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+
+    // Wrap around canvas edges
+if (this.x < 0) this.x = canvas.width;
+else if (this.x > canvas.width) this.x = 0;
+
+if (this.y < 0) this.y = canvas.height;
+else if (this.y > canvas.height) this.y = 0;
   
     this.draw();
   }
-  
 }
 // ^^ all above is in the particle class
-
 
 function initParticles(count = settings.particleCount) {
   particles = [];
@@ -160,7 +153,6 @@ function initParticles(count = settings.particleCount) {
     particles.push(new Particle(Math.random() * width, Math.random() * height));
   }
 }
-
 
 //clears the entire canvas before drawing the new frame  
 function animate() {
@@ -181,22 +173,16 @@ ctx.fillRect(0, 0, width, height);
 
   requestAnimationFrame(animate);
 }
+function drawBackgroundOnly() {
+  const gradient = ctx.createRadialGradient(
+    width / 2, height / 2, 0,
+    width / 2, height / 2, width / 1.2
+  );
+  gradient.addColorStop(0, settings.innerColor);
+  gradient.addColorStop(0.9, settings.outerColor);
 
-initParticles(3000);
-animate();
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, width, height);
+}
 
-const gui = new dat.GUI();
-
-gui.add(settings, 'particleCount', 500, 5000, 100).onFinishChange((value) => {
-  initParticles(value);
-});
-gui.add(settings, 'particleSize', 1, 10, 1).onChange((value) => {
-  particles.forEach(p => p.radius = value);
-});
-gui.addColor(settings, 'particleColor').onChange((value) => {
-  particles.forEach(p => p.color = value);
-});
-gui.add(settings, 'repulsionRadius', 10, 1000, 50).name('Cursor Radius');
-gui.add(settings, 'cursorForce', 10, 1000, 50).name('Cursor Force');
-gui.addColor(settings, 'innerColor').name('Center Color');
-gui.addColor(settings, 'outerColor').name('Edge Color');
+drawBackgroundOnly();
