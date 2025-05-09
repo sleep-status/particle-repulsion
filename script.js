@@ -24,7 +24,7 @@ Object.assign(overlayText.style, {
   fontFamily: 'Arial, sans-serif',
   maxWidth: '600px',
   lineHeight: '1.5',
-  zIndex: '1', 
+  zIndex: '-1', 
   opacity: '1',
   pointerEvents: 'none', // allows mouse to pass through to canvas
   fontWeight: "0.5",
