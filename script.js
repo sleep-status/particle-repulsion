@@ -12,11 +12,11 @@ document.body.appendChild(overlayText);
 const settings = {
   particleCount: 250,
   particleSize: 7,
-  particleColor: '#f2f2f2',
+  particleColor: 'rgba(150, 200, 100, 0.9)',
   repulsionRadius: 100,
   cursorForce: 500,
-  innerColor: '#2f7840',
-  outerColor: '#c8e398'
+  innerColor: '#AECCE4',
+  outerColor: '#FFFFFF'
 };
 
 //global variables
